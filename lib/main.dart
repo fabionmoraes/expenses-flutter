@@ -61,14 +61,31 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final List<Transaction> _transactions = [];
   bool _showCharts = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(
-        Duration(days: 7),
+        const Duration(days: 7),
       ));
     }).toList();
   }
@@ -109,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    Widget _getIconButton(IconData icon, Function() fn) {
+    Widget getIconButton(IconData icon, Function() fn) {
       return Platform.isIOS
           ? GestureDetector(onTap: fn, child: Icon(icon))
           : IconButton(icon: Icon(icon), onPressed: fn);
@@ -123,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final actions = [
       if (isLandscape)
-        _getIconButton(
+        getIconButton(
           _showCharts ? iconList : iconChart,
           () {
             setState(() {
@@ -131,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
         ),
-      _getIconButton(
+      getIconButton(
         Icons.add,
         () => _openTransactionFormModal(context),
       )
