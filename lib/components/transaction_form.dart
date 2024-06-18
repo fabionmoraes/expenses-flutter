@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'adaptive/button.dart';
+import 'adaptive/textfield.dart';
+import 'adaptive/datepicker.dart';
 
 class TransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
@@ -26,87 +28,50 @@ class _TransactionFormState extends State<TransactionForm> {
     widget.onSubmit(title, value, _selectedDate);
   }
 
-  _showDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2019),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      if (pickedDate == null) {
-        return;
-      }
-
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    });
-  }
-
-  Widget get resultDateSelected {
-    if (_selectedDate == null) {
-      return Text('Nenhuma data selecionada');
-    }
-
-    return Text(
-      'Data selecionada: ${DateFormat('dd/MM/yy').format(_selectedDate)}',
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 5,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(labelText: 'Título'),
-            ),
-            TextField(
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => _submitForm(),
-              controller: _valueController,
-              decoration: InputDecoration(labelText: 'Valor (R\$)'),
-            ),
-            Container(
-              height: 70,
-              child: Row(
+    return SingleChildScrollView(
+      child: Card(
+        color: Colors.white,
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: 10 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            children: [
+              AdaptiveTextField(
+                controller: _titleController,
+                onSubmitted: _submitForm,
+                label: 'Título',
+              ),
+              AdaptiveTextField(
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                controller: _valueController,
+                onSubmitted: _submitForm,
+                label: 'Valor (R\$)',
+              ),
+              AdaptiveDatePicker(
+                  selectedDate: _selectedDate,
+                  onDateChaged: (newDate) {
+                    setState(() {
+                      _selectedDate = newDate;
+                    });
+                  }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(child: resultDateSelected),
-                  TextButton(
-                    onPressed: _showDatePicker,
-                    child: Text('Selecionar data'),
-                    style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.all(
-                          Theme.of(context).primaryColor,
-                        ),
-                        textStyle: WidgetStateProperty.all(
-                          TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )),
+                  AdaptiveButton(
+                    label: 'Nova Transação',
+                    onPressed: _submitForm,
                   )
                 ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  child: Text('Nova Transação'),
-                  onPressed: _submitForm,
-                  style: ButtonStyle(
-                    foregroundColor: WidgetStateProperty.all(Colors.white),
-                    backgroundColor: WidgetStateProperty.all(Colors.purple),
-                  ),
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
