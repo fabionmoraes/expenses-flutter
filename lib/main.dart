@@ -185,12 +185,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             //     ],
             //   ),
             if (_showCharts || !isLandscape)
-              Container(
+              SizedBox(
                 height: availableHeight * (isLandscape ? 0.8 : 0.3),
                 child: Chart(_recentTransactions),
               ),
             if (!_showCharts || !isLandscape)
-              Container(
+              SizedBox(
                 height: availableHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(_transactions, _removeTransaction),
               ),
@@ -204,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             navigationBar: CupertinoNavigationBar(
               middle: Text(
                 title,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,

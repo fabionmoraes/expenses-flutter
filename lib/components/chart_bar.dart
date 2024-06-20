@@ -19,16 +19,17 @@ class ChartBar extends StatelessWidget {
         children: [
           Container(
             height: constrains.maxHeight * 0.15,
+            margin: EdgeInsets.only(bottom: constrains.maxHeight * 0.05),
             child: FittedBox(
-              child: Text('${value.toStringAsFixed(2)}'),
+              child: Text(value.toStringAsFixed(2)),
             ),
-          ),
-          SizedBox(
-            height: constrains.maxHeight * 0.05,
           ),
           Container(
             width: 12,
             height: constrains.maxHeight * 0.6,
+            margin: EdgeInsets.only(
+              bottom: constrains.maxHeight * 0.05,
+            ),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -55,9 +56,6 @@ class ChartBar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: constrains.maxHeight * 0.05,
-          ),
-          Container(
             height: constrains.maxHeight * 0.15,
             child: FittedBox(
               child: Text(weekDay),
